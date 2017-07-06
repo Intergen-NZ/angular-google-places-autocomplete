@@ -36,7 +36,9 @@ angular.module('google.places', [])
                     model: '=ngModel',
                     options: '=?',
                     forceSelection: '=?',
-                    customPlaces: '=?'
+                    customPlaces: '=?',
+                    minLength: '<',
+                    maxLength: '<'
                 },
                 controller: ['$scope', function ($scope) {}],
                 link: function ($scope, element, attrs, controller) {
@@ -56,6 +58,8 @@ angular.module('google.places', [])
                         $scope.predictions = [];
                         $scope.input = element;
                         $scope.options = $scope.options || {};
+                        $scope.minLength = $scope.minLength || 0;
+                        $scope.maxLength = $scope.maxLength || -1;
 
                         initAutocompleteDrawer();
                         initEvents();
@@ -184,6 +188,10 @@ angular.module('google.places', [])
                         var request;
 
                         if (!(viewValue && isString(viewValue))) return viewValue;
+
+                        // Length Validation
+                        if(viewValue.length <= $scope.minLength || ($scope.maxLength > -1 && viewValue.length > $scope.maxLength))
+                            return viewValue;
 
                         $scope.query = viewValue;
 
